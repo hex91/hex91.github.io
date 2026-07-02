@@ -30,6 +30,9 @@ hasCJKLanguage = true
   ShowCodeCopyButtons = true
   ShowWordCounts = true
 
+  # 自定义样式
+  customCSS = ['/css/custom.css']
+
 [params.homeInfoParams]
   Title = '星星躲在乌云中'
   Subtitle = '移动安全研究与逆向分析'
@@ -66,7 +69,7 @@ hasCJKLanguage = true
 
 # Giscus 评论（需在 giscus.app 获取配置后填写）
 [params.comments]
-  enable = true
+  enable = false  # 部署后再启用 Giscus
   giscus = true
 
 [params.giscus]
@@ -83,6 +86,6 @@ hasCJKLanguage = true
   lang = 'zh-CN'
   crossorigin = 'anonymous'
 
-# GoatCounter 访问统计（注册后填写 site 名称）
+# GoatCounter 访问统计（注册后填写 site 名称，详见 GOATCOUNTER_SETUP.md）
 [params.analytics]
-  goatcounter = '<YOUR_GOATCOUNTER_SITE>'
+  goatcounter = ''  # 暂时留空，注册后填写（如：'atworkhi'）
