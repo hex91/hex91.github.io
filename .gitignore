@@ -1,0 +1,14 @@
+# Hugo 构建输出
+/public/
+
+# Hugo 缓存
+/resources/_gen/
+/.hugo_build.lock
+
+# Node modules（如果用了 npm）
+node_modules/
+
+# 临时文件
+*.tmp
+*.swp
+*.swo
