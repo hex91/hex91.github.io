@@ -67,16 +67,16 @@ hasCJKLanguage = true
   url = '/about'
   weight = 50
 
-# Giscus 评论（需在 giscus.app 获取配置后填写）
+# Giscus 评论
 [params.comments]
-  enable = false  # 部署后再启用 Giscus
+  enable = true
   giscus = true
 
 [params.giscus]
   repo = 'atworkhi/atworkhi.github.io'
-  repoId = '<YOUR_REPO_ID>'
+  repoId = 'R_kgDOTLn_FA'
   category = 'Announcements'
-  categoryId = '<YOUR_CATEGORY_ID>'
+  categoryId = 'DIC_kwDOTLn_FM4DAXDg'
   mapping = 'pathname'
   strict = '0'
   reactionsEnabled = '1'
@@ -86,6 +86,6 @@ hasCJKLanguage = true
   lang = 'zh-CN'
   crossorigin = 'anonymous'
 
-# GoatCounter 访问统计（注册后填写 site 名称，详见 GOATCOUNTER_SETUP.md）
+# GoatCounter 访问统计
 [params.analytics]
-  goatcounter = ''  # 暂时留空，注册后填写（如：'atworkhi'）
+  goatcounter = 'hanxingxing'  # 已注册：hanxingxing.goatcounter.com
