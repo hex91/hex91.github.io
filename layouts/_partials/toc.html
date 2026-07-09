@@ -1,12 +1,23 @@
 {{- /* 右侧文章目录导航 (TOC) — 项目级覆盖 PaperMod 默认 toc.html */ -}}
 {{- $headers := findRE "<h[2-6]" .Content -}}
 {{- if and (.Param "ShowToc") (ge (len $headers) 1) -}}
-<details class="toc-sidebar" {{ if (.Param "TocOpen") }} open{{ end }} id="toc-sidebar">
-  <summary class="toc-title" accesskey="c" title="(Alt + C)">
-    <span>{{- i18n "toc" | default "目录" -}}</span>
-  </summary>
+
+{{- /* 移动端悬浮触发按钮 */ -}}
+<label class="toc-drawer-trigger" for="toc-drawer-toggle" aria-label="打开目录">
+  <span>目录</span>
+</label>
+<input type="checkbox" id="toc-drawer-toggle" class="toc-drawer-toggle" hidden>
+
+{{- /* 遮罩层（点击关闭抽屉）*/ -}}
+<label class="toc-drawer-backdrop" for="toc-drawer-toggle"></label>
+
+<aside class="toc-sidebar" {{ if (.Param "TocOpen") }} open{{ end }} id="toc-sidebar">
+  <div class="toc-header">
+    <span class="toc-title">{{- i18n "toc" | default "目录" -}}</span>
+    <label class="toc-close" for="toc-drawer-toggle" aria-label="关闭目录">✕</label>
+  </div>
   <div class="toc-content">
     {{- .TableOfContents -}}
   </div>
-</details>
+</aside>
 {{- end -}}

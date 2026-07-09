@@ -120,45 +120,51 @@ code, pre {
   }
 }
 
-/* ===== 文章右侧目录导航 (TOC) ===== */
-/* 默认（移动端）：顶部可折叠块 */
+/* ============================================================
+   文章右侧目录导航 (TOC)
+   - 宽屏：CSS Grid 双栏布局（正文 | 目录），杜绝覆盖问题
+   - 窄屏：右下悬浮按钮 + 右侧滑出抽屉
+   ============================================================ */
+
+/* ---- 目录面板公共样式 ---- */
 .toc-sidebar {
-  margin: 1rem 0;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--entry);
-  padding: 0.75rem 1rem;
   font-size: 0.9rem;
 }
 
-.toc-sidebar > summary.toc-title {
-  cursor: pointer;
+.toc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.toc-title {
   font-weight: 600;
-  list-style: none;
+  color: var(--primary);
   user-select: none;
+}
+
+.toc-close {
+  cursor: pointer;
+  color: var(--secondary);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.toc-close:hover {
+  background: var(--tertiary);
   color: var(--primary);
 }
 
-.toc-sidebar > summary.toc-title::-webkit-details-marker {
-  display: none;
-}
-
-.toc-sidebar > summary.toc-title::after {
-  content: "";
-  display: inline-block;
-  margin-left: 0.45rem;
-  border: 5px solid transparent;
-  border-top-color: currentColor;
-  transform: translateY(2px);
-  transition: transform 0.2s ease;
-}
-
-.toc-sidebar[open] > summary.toc-title::after {
-  transform: translateY(-3px) rotate(180deg);
-}
-
-.toc-sidebar .toc-content {
-  margin-top: 0.6rem;
+.toc-content {
+  padding: 0.75rem 1rem 1rem;
 }
 
 /* 清除 Hugo 原生 nav.toc 的默认外观，交给外层面板控制 */
@@ -188,6 +194,8 @@ code, pre {
   color: var(--secondary);
   text-decoration: none;
   transition: color 0.15s ease;
+  display: block;
+  padding: 2px 0;
 }
 
 .toc-sidebar .toc-content a:hover {
@@ -196,33 +204,132 @@ code, pre {
   text-underline-offset: 0.25rem;
 }
 
-/* 桌面端：右侧粘性导航栏 */
+/* ============================================================
+   宽屏模式 (>= 861px)：Grid 双栏 — 彻底解决覆盖问题
+   ============================================================ */
 @media (min-width: 861px) {
-  /* 有目录时加宽正文容器，让正文保持 ~720px，目录落在右侧留白 */
-  main:has(.toc-sidebar) {
-    max-width: calc(var(--main-width) + 300px + var(--gap) * 2);
+  /* 有目录时：文章区变为 Grid 双栏 [正文 auto | 目录 260px] */
+  .post-single:has(.toc-sidebar) {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 2rem;
+    align-items: start;
   }
 
+  .post-single:has(.toc-sidebar) > *:not(.toc-sidebar):not(.post-comments) {
+    grid-column: 1;
+  }
+
+  /* 目录吸在右侧 */
   .toc-sidebar {
-    float: right;
-    width: 250px;
-    margin: 0 0 1.5rem 2rem;
-    padding: 1rem 1.1rem;
     position: sticky;
     top: 84px;
     max-height: calc(100vh - 110px);
     overflow-y: auto;
+    grid-column: 2;
+    grid-row: 1 / 50; /* 跨所有行，随内容滚动 */
+  }
+
+  /* 隐藏移动端控件 */
+  .toc-drawer-trigger,
+  .toc-drawer-backdrop {
+    display: none !important;
+  }
+
+  /* 评论区横跨全宽 */
+  .post-comments {
+    grid-column: 1 / -1;
   }
 }
 
-/* 让页脚与评论区在浮动目录之后正常换行 */
-.post-single::after {
-  content: "";
-  display: block;
-  clear: both;
+/* ============================================================
+   窄屏模式 (< 861px)：悬浮按钮 + 右侧滑出抽屉
+   ============================================================ */
+.toc-sidebar {
+  /* 默认隐藏在屏幕外右侧 */
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 1000;
+  border-radius: 0;
+  border-left: 1px solid var(--border);
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
-/* 目录当前阅读位置高亮 (scrollspy) */
+[data-theme="dark"] .toc-sidebar {
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.35);
+}
+
+/* checkbox 选中 → 抽屉滑入 */
+#toc-drawer-toggle:checked ~ .toc-sidebar {
+  right: 0;
+}
+
+/* ---- 悬浮触发按钮（右下角）---- */
+.toc-drawer-trigger {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  user-select: none;
+  letter-spacing: 1px;
+}
+
+.toc-drawer-trigger:hover {
+  transform: scale(1.08);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+}
+
+.toc-drawer-trigger span {
+  pointer-events: none;
+}
+
+/* 打开时按钮变色 + 旋转提示 */
+#toc-drawer-toggle:checked ~ .toc-drawer-trigger {
+  background: var(--entry);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* ---- 遮罩层 ---- */
+.toc-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  background: rgba(0, 0, 0, 0);
+  pointer-events: none;
+  transition: background 0.3s ease;
+}
+
+#toc-drawer-toggle:checked ~ .toc-drawer-backdrop {
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+/* ============================================================
+   目录当前阅读位置高亮 (scrollspy)
+   ============================================================ */
 .toc-sidebar .toc-content a.active {
   color: var(--primary);
   font-weight: 600;

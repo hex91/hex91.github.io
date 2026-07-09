@@ -1,8 +1,9 @@
-{{- /* 文章目录滚动高亮 (scrollspy)：滚动到哪一节，右侧目录对应项高亮 */ -}}
+{{- /* 文章目录滚动高亮(scrollspy) + 移动端抽屉交互 */ -}}
 <script>
 (function () {
   var toc = document.getElementById('toc-sidebar');
   if (!toc) return;
+
   var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
   var items = [];
   links.forEach(function (a) {
@@ -12,6 +13,7 @@
   });
   if (!items.length) return;
 
+  /* ---- Scrollspy：滚动高亮当前小节 ---- */
   var current = null;
   function update() {
     var pos = window.scrollY + 100;
@@ -28,6 +30,11 @@
       if (current) current.classList.remove('active');
       active.link.classList.add('active');
       current = active.link;
+
+      /* 移动端：自动滚动高亮项到可见区域 */
+      if (window.innerWidth < 861) {
+        active.link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
     }
   }
 
@@ -41,5 +48,23 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   update();
+
+  /* ---- 移动端：点击目录链接后关闭抽屉 ---- */
+  links.forEach(function (a) {
+    a.addEventListener('click', function () {
+      var toggle = document.getElementById('toc-drawer-toggle');
+      if (toggle && toggle.checked) {
+        toggle.checked = false;
+      }
+    });
+  });
+
+  /* ---- ESC 键关闭抽屉 ---- */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var toggle = document.getElementById('toc-drawer-toggle');
+      if (toggle && toggle.checked) toggle.checked = false;
+    }
+  });
 })();
 </script>
