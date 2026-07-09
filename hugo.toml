@@ -10,6 +10,7 @@ hasCJKLanguage = true
 
 [params]
   # 站点信息
+  mainSections = ['posts']  # 首页文章列表来源（必须设置，否则首页不显示文章）
   title = '星星躲在乌云中'
   titleSeparator = ' | '
   description = '移动安全研究与逆向分析技术博客'
