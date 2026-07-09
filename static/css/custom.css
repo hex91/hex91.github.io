@@ -119,3 +119,100 @@ code, pre {
     padding: 0.75rem;
   }
 }
+
+/* ===== 文章右侧目录导航 (TOC) ===== */
+/* 默认（移动端）：顶部可折叠块 */
+.toc-sidebar {
+  margin: 1rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--entry);
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+
+.toc-sidebar > summary.toc-title {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  user-select: none;
+  color: var(--primary);
+}
+
+.toc-sidebar > summary.toc-title::-webkit-details-marker {
+  display: none;
+}
+
+.toc-sidebar > summary.toc-title::after {
+  content: "";
+  display: inline-block;
+  margin-left: 0.45rem;
+  border: 5px solid transparent;
+  border-top-color: currentColor;
+  transform: translateY(2px);
+  transition: transform 0.2s ease;
+}
+
+.toc-sidebar[open] > summary.toc-title::after {
+  transform: translateY(-3px) rotate(180deg);
+}
+
+.toc-sidebar .toc-content {
+  margin-top: 0.6rem;
+}
+
+/* 清除 Hugo 原生 nav.toc 的默认外观，交给外层面板控制 */
+.toc-sidebar .toc-content > nav.toc {
+  background: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+.toc-sidebar .toc-content ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  list-style: none;
+}
+
+.toc-sidebar .toc-content li {
+  margin: 0.3rem 0;
+}
+
+.toc-sidebar .toc-content li ul {
+  padding-left: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+.toc-sidebar .toc-content a {
+  color: var(--secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.toc-sidebar .toc-content a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+/* 桌面端：右侧粘性导航栏 */
+@media (min-width: 861px) {
+  .toc-sidebar {
+    float: right;
+    width: 250px;
+    margin: 0 0 1.5rem 2rem;
+    padding: 1rem 1.1rem;
+    position: sticky;
+    top: 84px;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+}
+
+/* 让页脚与评论区在浮动目录之后正常换行 */
+.post-single::after {
+  content: "";
+  display: block;
+  clear: both;
+}

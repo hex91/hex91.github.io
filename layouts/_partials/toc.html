@@ -1,0 +1,12 @@
+{{- /* 右侧文章目录导航 (TOC) — 项目级覆盖 PaperMod 默认 toc.html */ -}}
+{{- $headers := findRE "<h[2-6]" .Content -}}
+{{- if and (.Param "ShowToc") (ge (len $headers) 1) -}}
+<details class="toc-sidebar" {{ if (.Param "TocOpen") }} open{{ end }} id="toc-sidebar">
+  <summary class="toc-title" accesskey="c" title="(Alt + C)">
+    <span>{{- i18n "toc" | default "目录" -}}</span>
+  </summary>
+  <div class="toc-content">
+    {{- .TableOfContents -}}
+  </div>
+</details>
+{{- end -}}
