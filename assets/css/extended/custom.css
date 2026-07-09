@@ -227,7 +227,8 @@ code, pre {
     max-height: calc(100vh - 110px);
     overflow-y: auto;
     grid-column: 2;
-    grid-row: 1 / 50; /* 跨所有行，随内容滚动 */
+    grid-row: 1 / -1; /* 跨满所有行，长文也能全程吸顶 */
+    align-self: start;
   }
 
   /* 隐藏移动端控件 */
