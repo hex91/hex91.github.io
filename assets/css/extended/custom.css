@@ -22,7 +22,6 @@ code, pre {
   font-size: 0.9rem;
 }
 
-/* 代码块复制按钮样式 */
 .copy-code-button {
   background: #444;
   color: #eee;
@@ -79,41 +78,35 @@ code, pre {
 
 /* ===== 首页简介区域 ===== */
 .home-info svg {
-  display: none;  /* 隐藏默认图标 */
+  display: none;
 }
 
 /* ===== 滚动条美化 ===== */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
-
 [data-theme="dark"] ::-webkit-scrollbar-track {
   background: #2d2d2d;
 }
-
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
   background: #555;
 }
 
-/* ===== 移动端优化 ===== */
+/* ===== 移动端通用优化 ===== */
 @media (max-width: 768px) {
   .post-title {
     font-size: 1.4rem;
   }
-
   .highlight pre {
     font-size: 0.8rem;
     padding: 0.75rem;
@@ -122,7 +115,7 @@ code, pre {
 
 /* ============================================================
    文章右侧目录导航 (TOC)
-   - 宽屏：CSS Grid 双栏布局（正文 | 目录），杜绝覆盖问题
+   - 宽屏：Flexbox 双栏（正文 + sticky 目录）
    - 窄屏：右下悬浮按钮 + 右侧滑出抽屉
    ============================================================ */
 
@@ -167,7 +160,7 @@ code, pre {
   padding: 0.75rem 1rem 1rem;
 }
 
-/* 清除 Hugo 原生 nav.toc 的默认外观，交给外层面板控制 */
+/* 清除 Hugo 原生 nav.toc 默认外观 */
 .toc-sidebar .toc-content > nav.toc {
   background: none;
   border: none;
@@ -205,134 +198,131 @@ code, pre {
 }
 
 /* ============================================================
-   宽屏模式 (>= 861px)：Grid 双栏 — 彻底解决覆盖问题
-   .post-body 是 single.html 中的显式包裹容器（仅 ShowToc 时存在）
-   不依赖 :has() 选择器，100% 可靠
+   宽屏模式 (>= 861px)：Flexbox 双栏 — 正文 | sticky 目录
    ============================================================ */
 @media (min-width: 861px) {
-  /* .post-body 仅在有目录时由模板输出 → 天然 Grid 双栏 */
+  /* Flexbox 容器（仅 ShowToc 时由模板输出 .post-body）*/
   .post-body {
-    display: grid;
-    grid-template-columns: 1fr 260px;
+    display: flex;
     gap: 2rem;
-    align-items: start;
+    align-items: flex-start;
   }
 
-  /* 正文占第一列 */
+  /* 正文区：占据剩余空间，创建 BFC 防止内容溢出到目录下方 */
   .post-body > .post-content {
-    grid-column: 1;
-    min-width: 0; /* 防止长内容撑破网格 */
+    flex: 1;
+    min-width: 0;       /* 防止长内容撑破 flex */
+    overflow: hidden;   /* BFC：阻止内容溢出，但不影响 sticky 兄弟 */
   }
 
-  /* 目录吸在右侧第二列 */
+  /* 目录：sticky 吸顶在右侧 */
   .toc-sidebar {
     position: sticky;
     top: 84px;
+    flex: 0 0 250px;   /* 固定宽度，不伸缩 */
     max-height: calc(100vh - 110px);
     overflow-y: auto;
-    grid-column: 2;
-    align-self: start;
+    align-self: flex-start;
   }
 
-  /* 隐藏移动端控件 */
+  /* 隐藏所有移动端控件（包括 checkbox！）*/
   .toc-drawer-trigger,
+  .toc-drawer-toggle,
   .toc-drawer-backdrop {
     display: none !important;
   }
 
   /* 评论区横跨全宽 */
   .post-comments {
-    grid-column: 1 / -1;
+    width: 100%;
   }
 }
 
 /* ============================================================
    窄屏模式 (<= 860px)：悬浮按钮 + 右侧滑出抽屉
-   注意：必须包在 max-width 媒体查询内，否则桌面端
-   其 position:fixed 会覆盖桌面 media query 的 position:sticky
+   必须包在 max-width 内，避免 position:fixed 泄漏到桌面端
    ============================================================ */
 @media (max-width: 860px) {
-.toc-sidebar {
-  /* 默认隐藏在屏幕外右侧 */
-  position: fixed;
-  top: 0;
-  right: -300px;
-  width: 280px;
-  height: 100vh;
-  height: 100dvh;
-  z-index: 1000;
-  border-radius: 0;
-  border-left: 1px solid var(--border);
-  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow-y: auto;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-}
+  .toc-sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 1000;
+    border-radius: 0;
+    border-left: 1px solid var(--border);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+  }
 
-[data-theme="dark"] .toc-sidebar {
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.35);
-}
+  [data-theme="dark"] .toc-sidebar {
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.35);
+  }
 
-/* checkbox 选中 → 抽屉滑入 */
-#toc-drawer-toggle:checked ~ .toc-sidebar {
-  right: 0;
-}
+  /* checkbox 选中 → 抽屉滑入 */
+  #toc-drawer-toggle:checked ~ .toc-sidebar {
+    right: 0;
+  }
 
-/* ---- 悬浮触发按钮（右下角）---- */
-.toc-drawer-trigger {
-  position: fixed;
-  bottom: 24px;
-  right: 20px;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-  user-select: none;
-  letter-spacing: 1px;
-}
+  /* ---- 悬浮触发按钮（右下角）---- */
+  .toc-drawer-trigger {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    user-select: none;
+    letter-spacing: 1px;
+  }
 
-.toc-drawer-trigger:hover {
-  transform: scale(1.08);
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
-}
+  .toc-drawer-trigger:hover {
+    transform: scale(1.08);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+  }
 
-.toc-drawer-trigger span {
-  pointer-events: none;
-}
+  .toc-drawer-trigger span {
+    pointer-events: none;
+  }
 
-/* 打开时按钮变色 + 旋转提示 */
-#toc-drawer-toggle:checked ~ .toc-drawer-trigger {
-  background: var(--entry);
-  color: var(--primary);
-  border: 2px solid var(--primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
+  /* 打开时按钮变色 */
+  #toc-drawer-toggle:checked ~ .toc-drawer-trigger {
+    background: var(--entry);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
 
-/* ---- 遮罩层 ---- */
-.toc-drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 998;
-  background: rgba(0, 0, 0, 0);
-  pointer-events: none;
-  transition: background 0.3s ease;
-}
+  /* ---- 遮罩层 ---- */
+  .toc-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    transition: background 0.3s ease;
+  }
 
-#toc-drawer-toggle:checked ~ .toc-drawer-backdrop {
-  background: rgba(0, 0, 0, 0.35);
-  pointer-events: auto;
-}
+  #toc-drawer-toggle:checked ~ .toc-drawer-backdrop {
+    background: rgba(0, 0, 0, 0.35);
+    pointer-events: auto;
+  }
 }
 
 /* ============================================================
@@ -346,7 +336,7 @@ code, pre {
   margin-left: -0.65rem;
 }
 
-/* 点击目录跳转时避开吸顶导航；锚点平滑滚动 */
+/* 锚点跳转避开吸顶导航；平滑滚动 */
 .post-content :is(h1, h2, h3, h4, h5, h6) {
   scroll-margin-top: 90px;
 }
