@@ -12,7 +12,7 @@ draft = false
 
 - 主要研究方向：Android/iOS 逆向、Frida/Xposed 实战、移动安全
 - 偶尔写点读书笔记
-- 联系方式：[GitHub](https://github.com/<YOUR_GITHUB_USERNAME>)
+- 联系方式：[GitHub](https://github.com/hex91)
 
 ## 博客技术栈
 
