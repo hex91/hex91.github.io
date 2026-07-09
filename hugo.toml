@@ -50,17 +50,17 @@ hasCJKLanguage = true
 
 [[menu.main]]
   name = '归档'
-  url = '/archives'
+  url = '/archives/'
   weight = 20
 
 [[menu.main]]
   name = '标签'
-  url = '/tags'
+  url = '/tags/'
   weight = 30
 
 [[menu.main]]
   name = '搜索'
-  url = '/search'
+  url = '/search/'
   weight = 40
 
 [[menu.main]]
