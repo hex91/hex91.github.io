@@ -4,6 +4,10 @@ languageCode = 'zh-cn'
 defaultContentLanguage = 'zh-cn'
 theme = 'PaperMod'
 
+# 搜索引擎索引（PaperMod 搜索依赖根目录 index.json）
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
 # 构建配置
 pygmentsCodefences = true
 hasCJKLanguage = true
