@@ -247,8 +247,11 @@ code, pre {
 }
 
 /* ============================================================
-   窄屏模式 (< 861px)：悬浮按钮 + 右侧滑出抽屉
+   窄屏模式 (<= 860px)：悬浮按钮 + 右侧滑出抽屉
+   注意：必须包在 max-width 媒体查询内，否则桌面端
+   其 position:fixed 会覆盖桌面 media query 的 position:sticky
    ============================================================ */
+@media (max-width: 860px) {
 .toc-sidebar {
   /* 默认隐藏在屏幕外右侧 */
   position: fixed;
@@ -329,6 +332,7 @@ code, pre {
 #toc-drawer-toggle:checked ~ .toc-drawer-backdrop {
   background: rgba(0, 0, 0, 0.35);
   pointer-events: auto;
+}
 }
 
 /* ============================================================
