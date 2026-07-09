@@ -206,28 +206,31 @@ code, pre {
 
 /* ============================================================
    宽屏模式 (>= 861px)：Grid 双栏 — 彻底解决覆盖问题
+   .post-body 是 single.html 中的显式包裹容器（仅 ShowToc 时存在）
+   不依赖 :has() 选择器，100% 可靠
    ============================================================ */
 @media (min-width: 861px) {
-  /* 有目录时：文章区变为 Grid 双栏 [正文 auto | 目录 260px] */
-  .post-single:has(.toc-sidebar) {
+  /* .post-body 仅在有目录时由模板输出 → 天然 Grid 双栏 */
+  .post-body {
     display: grid;
     grid-template-columns: 1fr 260px;
     gap: 2rem;
     align-items: start;
   }
 
-  .post-single:has(.toc-sidebar) > *:not(.toc-sidebar):not(.post-comments) {
+  /* 正文占第一列 */
+  .post-body > .post-content {
     grid-column: 1;
+    min-width: 0; /* 防止长内容撑破网格 */
   }
 
-  /* 目录吸在右侧 */
+  /* 目录吸在右侧第二列 */
   .toc-sidebar {
     position: sticky;
     top: 84px;
     max-height: calc(100vh - 110px);
     overflow-y: auto;
     grid-column: 2;
-    grid-row: 1 / -1; /* 跨满所有行，长文也能全程吸顶 */
     align-self: start;
   }
 
