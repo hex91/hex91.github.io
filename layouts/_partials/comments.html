@@ -1,18 +1,68 @@
 {{- /* Giscus 评论系统 */ -}}
 {{- if .Site.Params.giscus }}
-<script src="https://giscus.app/client.js"
-        data-repo="{{ .Site.Params.giscus.repo }}"
-        data-repo-id="{{ .Site.Params.giscus.repoId }}"
-        data-category="{{ .Site.Params.giscus.category }}"
-        data-category-id="{{ .Site.Params.giscus.categoryId }}"
-        data-mapping="{{ .Site.Params.giscus.mapping }}"
-        data-strict="{{ .Site.Params.giscus.strict }}"
-        data-reactions-enabled="{{ .Site.Params.giscus.reactionsEnabled }}"
-        data-emit-metadata="{{ .Site.Params.giscus.emitMetadata }}"
-        data-input-position="{{ .Site.Params.giscus.inputPosition }}"
-        data-theme="{{ .Site.Params.giscus.theme }}"
-        data-lang="{{ .Site.Params.giscus.lang }}"
-        crossorigin="{{ .Site.Params.giscus.crossorigin }}"
-        async>
+<script>
+(function() {
+  // 获取当前 PaperMod 主题
+  function getTheme() {
+    const stored = localStorage.getItem("pref-theme");
+    if (stored === "dark" || stored === "light") return stored;
+    return document.documentElement.dataset.theme || "light";
+  }
+
+  // 设置 Giscus 主题
+  function setGiscusTheme(theme) {
+    const frame = document.querySelector("iframe.giscus-frame");
+    if (frame) {
+      frame.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: theme } } },
+        "https://giscus.app"
+      );
+    }
+  }
+
+  // 当前主题
+  const currentTheme = getTheme();
+  document.write('<script src="https://giscus.app/client.js"\n' +
+    '        data-repo="{{ .Site.Params.giscus.repo }}"\n' +
+    '        data-repo-id="{{ .Site.Params.giscus.repoId }}"\n' +
+    '        data-category="{{ .Site.Params.giscus.category }}"\n' +
+    '        data-category-id="{{ .Site.Params.giscus.categoryId }}"\n' +
+    '        data-mapping="{{ .Site.Params.giscus.mapping }}"\n' +
+    '        data-strict="{{ .Site.Params.giscus.strict }}"\n' +
+    '        data-reactions-enabled="{{ .Site.Params.giscus.reactionsEnabled }}"\n' +
+    '        data-emit-metadata="{{ .Site.Params.giscus.emitMetadata }}"\n' +
+    '        data-input-position="{{ .Site.Params.giscus.inputPosition }}"\n' +
+    '        data-theme="' + currentTheme + '"\n' +
+    '        data-lang="{{ .Site.Params.giscus.lang }}"\n' +
+    '        crossorigin="{{ .Site.Params.giscus.crossorigin }}"\n' +
+    '        async>\n' +
+    '<\/script>');
+
+  // 监听主题切换
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.attributeName === "data-theme") {
+        const newTheme = document.documentElement.dataset.theme;
+        if (newTheme) setGiscusTheme(newTheme);
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+
+  // 同时监听 Giscus iframe 加载完成
+  window.addEventListener("message", function(event) {
+    if (event.origin !== "https://giscus.app") return;
+    if (!(typeof event.data === "object" && event.data.giscus)) return;
+    // Giscus 加载完成，确保主题正确
+    const theme = getTheme();
+    const frame = document.querySelector("iframe.giscus-frame");
+    if (frame) {
+      frame.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: theme } } },
+        "https://giscus.app"
+      );
+    }
+  });
+})();
 </script>
 {{- end }}
