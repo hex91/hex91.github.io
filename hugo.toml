@@ -1,4 +1,4 @@
-baseURL = 'https://atworkhi.github.io/'
+baseURL = 'https://hex91.github.io/'
 title = '星星躲在乌云中'
 languageCode = 'zh-cn'
 defaultContentLanguage = 'zh-cn'
@@ -14,7 +14,7 @@ hasCJKLanguage = true
   titleSeparator = ' | '
   description = '移动安全研究与逆向分析技术博客'
   author = '星星躲在乌云中'
-  github = 'https://github.com/atworkhi'
+  github = 'https://github.com/hex91'
 
   # 主题切换
   defaultTheme = 'auto'  # auto / light / dark
@@ -73,7 +73,7 @@ hasCJKLanguage = true
   giscus = true
 
 [params.giscus]
-  repo = 'atworkhi/atworkhi.github.io'
+  repo = 'hex91/hex91.github.io'
   repoId = 'R_kgDOTLn_FA'
   category = 'Announcements'
   categoryId = 'DIC_kwDOTLn_FM4DAXDg'
