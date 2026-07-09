@@ -216,3 +216,21 @@ code, pre {
   display: block;
   clear: both;
 }
+
+/* 目录当前阅读位置高亮 (scrollspy) */
+.toc-sidebar .toc-content a.active {
+  color: var(--primary);
+  font-weight: 600;
+  border-left: 2px solid var(--primary);
+  padding-left: 0.45rem;
+  margin-left: -0.65rem;
+}
+
+/* 点击目录跳转时避开吸顶导航；锚点平滑滚动 */
+.post-content :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 90px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
