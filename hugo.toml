@@ -35,9 +35,6 @@ hasCJKLanguage = true
   ShowCodeCopyButtons = true
   ShowWordCounts = true
 
-  # 自定义样式
-  customCSS = ['/css/custom.css']
-
 [params.homeInfoParams]
   Title = '星星躲在乌云中'
   Subtitle = '移动安全研究与逆向分析'

@@ -198,6 +198,11 @@ code, pre {
 
 /* 桌面端：右侧粘性导航栏 */
 @media (min-width: 861px) {
+  /* 有目录时加宽正文容器，让正文保持 ~720px，目录落在右侧留白 */
+  main:has(.toc-sidebar) {
+    max-width: calc(var(--main-width) + 300px + var(--gap) * 2);
+  }
+
   .toc-sidebar {
     float: right;
     width: 250px;
